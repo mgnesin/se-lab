@@ -1,6 +1,3 @@
-dag_crazy_complex.py
-
-
 from airflow.decorators import dag, task
 from airflow.operators.empty import EmptyOperator
 from airflow.utils.edgemodifier import Label
@@ -20,28 +17,56 @@ def crazy_complex_dag():
     start = EmptyOperator(task_id="start")
 
     # Layer 1: Fan out to 3 extractors
-    @task(); def extract_customers(): return "customers"
-    @task(); def extract_orders(): return "orders"
-    @task(); def extract_products(): return "products"
+    @task()
+    def extract_customers(): return "customers"
+    
+    @task()
+    def extract_orders(): return "orders"
+    
+    @task()
+    def extract_products(): return "products"
 
     # Layer 2: Each feeds 2 validators (6 tasks)
-    @task(); def validate_cust_schema(d): return d
-    @task(); def validate_cust_volume(d): return d
-    @task(); def validate_ord_schema(d): return d
-    @task(); def validate_ord_dates(d): return d
-    @task(); def validate_prod_sku(d): return d
-    @task(); def validate_prod_price(d): return d
+    @task()
+    def validate_cust_schema(d): return d
+    
+    @task()
+    def validate_cust_volume(d): return d
+    
+    @task()
+    def validate_ord_schema(d): return d
+    
+    @task()
+    def validate_ord_dates(d): return d
+    
+    @task()
+    def validate_prod_sku(d): return d
+    
+    @task()
+    def validate_prod_price(d): return d
 
     # Layer 3: Cross-stream joins (creates cross-edges)
-    @task(); def join_cust_orders(c, o): return "cust_ord"
-    @task(); def join_orders_products(o, p): return "ord_prod"
-    @task(); def join_all(c, o): return "all_joined"
+    @task()
+    def join_cust_orders(c, o): return "cust_ord"
+    
+    @task()
+    def join_orders_products(o, p): return "ord_prod"
+    
+    @task()
+    def join_all(c, o): return "all_joined"
 
     # Layer 4: Parallel transforms
-    @task(); def transform_revenue(d): return d
-    @task(); def transform_cohorts(d): return d
-    @task(); def transform_inventory(d): return d
-    @task(); def transform_clv(d): return d
+    @task()
+    def transform_revenue(d): return d
+    
+    @task()
+    def transform_cohorts(d): return d
+    
+    @task()
+    def transform_inventory(d): return d
+    
+    @task()
+    def transform_clv(d): return d
 
     # Layer 5: Quality gate
     @task()
@@ -49,14 +74,24 @@ def crazy_complex_dag():
         return all([r, c, i, clv])
 
     # Layer 6: Parallel loads
-    @task(); def load_snowflake(d): return "sf_done"
-    @task(); def load_gcs_archive(d): return "gcs_done"
-    @task(); def load_reporting_mart(d): return "mart_done"
+    @task()
+    def load_snowflake(d): return "sf_done"
+
+    @task()
+    def load_gcs_archive(d): return "gcs_done"
+    
+    @task()
+    def load_reporting_mart(d): return "mart_done"
 
     # Layer 7: Notifications (fan-out from 3 loads)
-    @task(); def notify_data_team(a, b, c): return "notified"
-    @task(); def notify_bi_team(d): return "notified"
-    @task(); def update_data_catalog(a, b, c): return "cataloged"
+    @task()
+    def notify_data_team(a, b, c): return "notified"
+    
+    @task()
+    def notify_bi_team(d): return "notified"
+    
+    @task()
+    def update_data_catalog(a, b, c): return "cataloged"
 
     end = EmptyOperator(task_id="end")
 
