@@ -1,5 +1,3 @@
-dag_parallel_checks.py
-
 from airflow.decorators import dag, task
 from airflow.providers.snowflake.hooks.snowflake import SnowflakeHook
 from datetime import datetime
