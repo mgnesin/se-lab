@@ -4,7 +4,7 @@ from datetime import datetime
 import logging
 
 @dag(
-    dag_id="dag_1_serial_etl",
+    dag_id="dag_serial_etl",
     start_date=datetime(2024, 1, 1),
     schedule=None,
     catchup=False,
@@ -22,7 +22,7 @@ def serial_etl_pipeline():
         """Pull customer count from GCP PostgreSQL"""
         from airflow.providers.postgres.hooks.postgres import PostgresHook
         hook = PostgresHook(postgres_conn_id="gcp_postgres")
-        result = hook.get_records("SELECT COUNT(*) FROM customers;")
+        result = hook.get_records("SELECT COUNT(*) FROM app_data.customers;")
         logging.info(f"Customer count: {result[0][0]}")
         return {"customer_count": result[0][0]}
 
