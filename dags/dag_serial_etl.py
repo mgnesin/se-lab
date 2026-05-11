@@ -62,3 +62,5 @@ def serial_etl_pipeline():
     load_to_snowflake(transformed)
 
 serial_etl_pipeline()
+
+# updated
