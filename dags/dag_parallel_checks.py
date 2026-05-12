@@ -18,7 +18,7 @@ def parallel_dq_checks():
 
     @task()
     def check_null_customer_emails():
-        hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
+        hook = SnowflakeHook(snowflake_conn_id="snowflake")
         result = hook.get_first(
             "SELECT COUNT(*) FROM CUSTOMERS WHERE EMAIL IS NULL;"
         )
@@ -27,10 +27,10 @@ def parallel_dq_checks():
 
     @task()
     def check_orphaned_orders():
-        hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
+        hook = SnowflakeHook(snowflake_conn_id="snowflake")
         result = hook.get_first("""
-            SELECT COUNT(*) FROM ORDERS o
-            LEFT JOIN CUSTOMERS c ON o.customer_id = c.id
+            SELECT COUNT(*) FROM DEMO_DB.GOOGLE_CLOUD_POSTGRESQL_APP_DATA.ORDERS o
+            LEFT JOIN DEMO_DB.GOOGLE_CLOUD_POSTGRESQL_APP_DATA.CUSTOMERS c ON o.customer_id = c.id
             WHERE c.id IS NULL;
         """)
         assert result[0] == 0, f"Found {result[0]} orphaned orders!"
@@ -38,20 +38,20 @@ def parallel_dq_checks():
 
     @task()
     def check_negative_order_amounts():
-        hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
+        hook = SnowflakeHook(snowflake_conn_id="snowflake")
         result = hook.get_first(
-            "SELECT COUNT(*) FROM ORDERS WHERE amount < 0;"
+            "SELECT COUNT(*) FROM DEMO_DB.GOOGLE_CLOUD_POSTGRESQL_APP_DATA.ORDERS WHERE amount < 0;"
         )
         assert result[0] == 0, f"Found {result[0]} negative order amounts!"
         return {"check": "negative_amounts", "status": "PASS"}
 
     @task()
     def check_duplicate_customers():
-        hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
+        hook = SnowflakeHook(snowflake_conn_id="snowflake")
         result = hook.get_first("""
             SELECT COUNT(*) FROM (
                 SELECT EMAIL, COUNT(*) as cnt
-                FROM CUSTOMERS
+                FROM DEMO_DB.GOOGLE_CLOUD_POSTGRESQL_APP_DATA.CUSTOMERS
                 GROUP BY EMAIL HAVING cnt > 1
             );
         """)

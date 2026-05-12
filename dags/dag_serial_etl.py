@@ -48,7 +48,7 @@ def serial_etl_pipeline():
     @task()
     def load_to_snowflake(payload: dict):
         """Log the load confirmation to Snowflake audit table"""
-        hook = SnowflakeHook(snowflake_conn_id="snowflake_default")
+        hook = SnowflakeHook(snowflake_conn_id="snowflake")
         hook.run(f"""
             INSERT INTO AUDIT.PIPELINE_LOG (pipeline_name, record_count, loaded_at)
             VALUES ('{payload["pipeline"]}', {payload["customer_count"]}, CURRENT_TIMESTAMP());
