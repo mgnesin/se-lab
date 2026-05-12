@@ -63,4 +63,3 @@ def serial_etl_pipeline():
 
 serial_etl_pipeline()
 
-# updated
