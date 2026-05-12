@@ -106,12 +106,12 @@ def crazy_complex_dag():
 
     co  = join_cust_orders(vc1, vo1)
     op  = join_orders_products(vo2, vp1)
-    all = join_all(co, op)
+    joined = join_all(co, op)
 
-    r   = transform_revenue(all)
+    r   = transform_revenue(joined)
     ch  = transform_cohorts(co)
     inv = transform_inventory(op)
-    clv = transform_clv(all)
+    clv = transform_clv(joined)
 
     qg  = quality_gate(r, ch, inv, clv)
 
