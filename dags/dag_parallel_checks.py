@@ -25,7 +25,7 @@ def parallel_dq_checks():
         assert result[0] == 0, f"Found {result[0]} customers with null emails!"
         return {"check": "null_emails", "status": "PASS"}
 
-    @task()
+    @task(queue="snowflake")
     def check_orphaned_orders():
         hook = SnowflakeHook(snowflake_conn_id="snowflake")
         result = hook.get_first("""
@@ -36,7 +36,7 @@ def parallel_dq_checks():
         assert result[0] == 1, f"Found {result[0]} orphaned orders!"
         return {"check": "orphaned_orders", "status": "PASS"}
 
-    @task()
+    @task(queue="snowflake")
     def check_negative_order_amounts():
         hook = SnowflakeHook(snowflake_conn_id="snowflake")
         result = hook.get_first(
