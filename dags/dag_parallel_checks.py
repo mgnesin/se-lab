@@ -65,3 +65,5 @@ def parallel_dq_checks():
     check_duplicate_customers()
 
 parallel_dq_checks()
+
+#update
